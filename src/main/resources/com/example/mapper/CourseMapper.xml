@@ -21,6 +21,38 @@
 	<!-- resultMap属性にはメソッドの返り値となるEntityを定義する（返り値がListでも要素となるEntityを指定する） -->
 	<select id="findAll" resultMap="courseMap">
 		<!-- 実行するSQLを定義する -->
-		SELECT * FROM COURSES
+		SELECT 
+		    * 
+		FROM 
+		    COURSES
+		<where>
+		    <if test="courseId != null">
+		        ID = #{courseId}
+		    </if>
+		    <if test="courseName != null">
+		        OR NAME = #{courseName}
+		    </if>
+		</where>
 	</select>
+	
+	<!-- データ1件取得用メソッドのタグとSQL文 -->
+	<select id="findById" resultMap="courseMap">
+	    SELECT * FROM COURSES WHERE ID = #{id}
+	</select>
+	
+	<!-- 新規登録用メソッドのタグとSQL文 -->
+	<!-- id="インターフェイスのメソッド名" useGeneratedKeys="true" keyColumn="カラム名" keyProperry="エンティティのフィールド名" -->
+	<insert id="insert" useGeneratedKeys="true" keyColumn="ID" keyProperty="id">
+	    INSERT INTO COURSES (ID, NAME) VALUES (COURSE_ID_SEQ.nextval, #{name})
+	</insert>
+	
+	<!-- 更新用メソッドのタグとSQL文 -->
+	<update id="update">
+	    UPDATE COURSES SET NAME = #{name} WHERE ID = #{id}
+	</update>
+	
+	<!-- 削除用メソッドのタグとSQL -->
+	<delete id="deleteById">
+	    DELETE FROM COURSES WHERE ID = #{id}
+	</delete>
 </mapper>

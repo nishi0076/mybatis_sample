@@ -14,6 +14,20 @@
 		<id column="ID" property="id" />
 		<!-- resultタグで主キー以外のカラムとフィールドを紐づける -->
 		<result column="NAME" property="name" />
+		
+		<!-- 1対1のリレーション設定 -->
+		<!-- property="フィールド名" javaType="追加したEntityのクラスパス" -->
+		<!-- カラム名にはエイリアスを指定 -->
+		<association property="courseDetail" javaType="com.example.entity.CourseDetail">
+		    <id column="CD_ID" property="id"/>
+		    <result column="DESCRIPTION" property="description"/>
+		</association>
+		
+		<!-- 1対多のリレーション設定 -->
+		<collection property="chapters" ofType="com.example.entity.Chapter">
+		    <id column="CH_ID" property="id"/>
+		    <result column="CH_NAME" property="name"/>
+		</collection>
 	</resultMap>
 
 	<!-- データを取得する時はselectタグを使用する -->
@@ -37,7 +51,25 @@
 	
 	<!-- データ1件取得用メソッドのタグとSQL文 -->
 	<select id="findById" resultMap="courseMap">
-	    SELECT * FROM COURSES WHERE ID = #{id}
+	    SELECT 
+	        C.ID
+	        ,C.NAME
+	        ,CD.ID AS CD_ID
+	        ,CD.DESCRIPTION 
+	        ,CH.ID AS CH_ID
+	        ,CH.NAME AS CH_NAME
+	    FROM 
+	        COURSES C
+	    INNER JOIN
+	        COURSE_DETAILS CD
+	    ON 
+	        C.ID = CD.COURSES_ID
+	    INNER JOIN
+	        CHAPTERS CH
+	    ON
+	        C.ID = CH.COURSES_ID
+	    WHERE 
+	        C.ID = #{id}
 	</select>
 	
 	<!-- 新規登録用メソッドのタグとSQL文 -->

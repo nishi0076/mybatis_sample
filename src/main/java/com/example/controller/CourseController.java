@@ -37,7 +37,6 @@ public class CourseController {
 		return "index";
 	}
 	
-	
 	// 新規登録処理
 	@PostMapping("/create")
 	public String create(@ModelAttribute CourseForm courseForm) {
@@ -66,5 +65,14 @@ public class CourseController {
 	public String delete(@PathVariable Integer id) {
 		this.courseService.deleteById(id);
 		return "redirect:/course/list";
+	}
+	
+	// コース詳細画面表示処理
+	@GetMapping("/{id}")
+	public String detail(@PathVariable Integer id, Model model) {
+		Course course = this.courseService.findById(id);
+		model.addAttribute("course", course);
+		return "detail";
+		
 	}
 }
